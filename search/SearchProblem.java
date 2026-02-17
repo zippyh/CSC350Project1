@@ -10,6 +10,10 @@ public class SearchProblem extends Problem {
         super(startStation);
     }
 
+    public SearchProblem(State startStation, State destination){
+        super(startStation, destination);
+    }
+
     public SearchProblem(State startStation, State destination, int d) {
         super(startStation, destination);
         this.d = d;
