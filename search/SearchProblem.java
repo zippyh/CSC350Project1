@@ -40,7 +40,7 @@ public class SearchProblem extends Problem {
 
         for (Station neighbor : adjacent) {
 
-            // Create a new search.State using the neighbor's name
+            // Create a new State using the neighbor's name
             State nextState = new State(neighbor.name);
 
             // Create an Action describing the move
