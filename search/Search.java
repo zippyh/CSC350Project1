@@ -3,7 +3,6 @@ package search;
 import java.util.Queue;
 import java.util.LinkedList;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import subway.*;
@@ -121,5 +120,7 @@ public class Search{
 		System.out.println("ran bfs");
 
 		//System.out.println(args[0]);
+		System.out.println("Usage: java Search <inputFile>");
+		System.out.println(args[0]);
 	}
 }
