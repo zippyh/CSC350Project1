@@ -47,7 +47,7 @@ public class Search{
 	public static void main(String[] args){
 		//Replace this code with code that runs the program specified by
 		//the command arguments
-		
+		System.out.println("Usage: java Search <inputFile>");
 		System.out.println(args[0]);
 	}
 }
