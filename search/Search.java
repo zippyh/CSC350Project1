@@ -1,6 +1,7 @@
 package search;
 
 import java.util.Queue;
+import java.util.*;
 import java.util.LinkedList;
 import java.io.FileNotFoundException;
 import java.util.HashSet;
@@ -94,6 +95,11 @@ public class Search{
 	
 	public static Node uniformCostSearch(Problem problem){
 		//YOUR CODE HERE
+		PriorityQueue priorityQueue = new PriorityQueue<Node>();
+
+		while (!priorityQueue.isEmpty()){
+			
+		}
 		return null;
 	}
 
