@@ -1,5 +1,13 @@
 package search;
 
+import java.util.Queue;
+import java.util.LinkedList;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import subway.*;
+
 /**
 This code is adapted from search.py in the AIMA Python implementation, which is published with the license below:
 
@@ -22,7 +30,61 @@ public class Search{
 	// Uninformed Search algorithms
 	
 	public static Node breadthFirstSearch(Problem problem){
-		//YOUR CODE HERE
+		Queue<Node> frontier = new LinkedList<>();
+		HashSet<State> exploredSet = new HashSet<>();
+		// determines where we start
+		Node start = new Node(problem.getInitial());
+
+		int nodesVisited = 0;
+
+
+		// check to see if start node is goal node ("i want to get from Fenway to Fenway!")
+		if(problem.goalTest(start.getState())){
+			return start;
+		}
+
+		// add first node to frontier
+		frontier.add(start);
+
+		// runs while the frontier is not empty
+		while(!frontier.isEmpty()){
+			Node node = frontier.poll();
+			nodesVisited++;
+			exploredSet.add(node.getState());
+
+			for(Node child : node.expand(problem)){
+				// checks to see if each node expanded from the child node is in the frontier or explored set
+
+				boolean inFrontier = false;
+
+    			for (Node n : frontier) {
+        			if (n.getState().equals(child.getState())) {
+            			inFrontier = true;
+            			break;
+        			}
+    			}
+				
+				if(!exploredSet.contains(child.getState()) && !inFrontier){
+					// is this node the goal node?
+					if(problem.goalTest(child.getState())){
+						// if so, print out path, cost, etc
+    					System.out.println("Final Path:");
+
+						for(Node n : child.path()){
+							System.out.println(n.getState());
+						}
+
+						System.out.println("Total cost: " + child.getPathCost());
+						System.out.println("Nodes visited: " + nodesVisited);
+
+						return child;
+					}
+					// if not, add to frontier
+					frontier.add(child);
+				}
+			}
+		}
+		System.out.println("Nodes visited: " + nodesVisited);
 		return null;
 	}
 	
@@ -44,10 +106,20 @@ public class Search{
 	}
 	
 	// Main
-	public static void main(String[] args){
+	public static void main(String[] args) throws FileNotFoundException{
 		//Replace this code with code that runs the program specified by
 		//the command arguments
-		
-		System.out.println(args[0]);
+		SubwayMap hahaYeah = SubwayMap.buildBostonMap();
+
+		State start = new State("Assembly");
+		State goal = new State("Fenway");
+
+
+		SearchProblem what = new SearchProblem(start, goal, hahaYeah);
+
+		System.out.println(breadthFirstSearch(what));
+		System.out.println("ran bfs");
+
+		//System.out.println(args[0]);
 	}
 }

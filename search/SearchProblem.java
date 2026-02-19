@@ -52,4 +52,9 @@ public class SearchProblem extends Problem {
 
         return successors;
     }
+
+    @Override
+    public double pathCost(double c, State state1, Action action, State state2){
+		return c + 1;
+	}
 }
