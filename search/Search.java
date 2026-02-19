@@ -2,6 +2,8 @@ package search;
 
 import java.util.*;
 
+import java.util.Queue;
+import java.util.LinkedList;
 import java.io.FileNotFoundException;
 
 import subway.*;
@@ -140,9 +142,14 @@ public class Search {
 		System.out.println("Nodes visited: " + explored.size());
 		return null;
 	}
+	
+	public static Node uniformCostSearch(Problem problem){
+		//YOUR CODE HERE
+		PriorityQueue priorityQueue = new PriorityQueue<Node>();
 
-	public static Node uniformCostSearch(Problem problem) {
-		// YOUR CODE HERE
+		while (!priorityQueue.isEmpty()){
+			
+		}
 		return null;
 	}
 
