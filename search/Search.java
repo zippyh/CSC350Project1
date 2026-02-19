@@ -1,5 +1,6 @@
 package search;
 
+import java.util.*;
 /**
 This code is adapted from search.py in the AIMA Python implementation, which is published with the license below:
 
@@ -27,7 +28,21 @@ public class Search{
 	}
 	
 	public static Node depthFirstSearch(Problem problem){
-		//YOUR CODE HERE
+		Stack<Node> frontier = new Stack<>();
+		frontier.push(new Node(problem.getInitial(), null, null, 0));
+		Set<State> explored = new HashSet<>();
+		while(!frontier.isEmpty()){
+		Node current = frontier.pop();
+		if (problem.goalTest(current.getState())) {
+			return current;
+		}
+		explored.add(current.getState());
+		for (Tuple tuple : problem.successor(current.getState())) {
+			if(!explored.contains(tuple.getState()) && !frontier.contains(tuple)) {
+				frontier.push(new Node(tuple.getState(), current, tuple.getAction(), current.getPathCost() + 1));
+			}
+		}
+	}
 		return null;
 	}
 	
@@ -47,7 +62,9 @@ public class Search{
 	public static void main(String[] args){
 		//Replace this code with code that runs the program specified by
 		//the command arguments
-		System.out.println("Usage: java Search <inputFile>");
+		
 		System.out.println(args[0]);
+		//Problem p = new SearchProblem(new State(args[2]), new State(args[3]), args[0]);
+		//depthFirstSearch(p);
 	}
 }
