@@ -69,4 +69,11 @@ public class SearchProblem extends Problem {
         
         //return c + 1;
 	}
+    @Override
+    public double h(Node node) {
+        Station s1 = map.getStationByName(node.getState().getName());
+        Station s2 = map.getStationByName(this.goal.getName());
+        double distance = SubwayMap.straightLineDistance(s1, s2);
+        return distance;
+    }
 }
