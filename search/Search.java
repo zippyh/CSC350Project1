@@ -1,11 +1,7 @@
 package search;
 
-import java.util.*;
-
-import java.util.Queue;
-import java.util.LinkedList;
 import java.io.FileNotFoundException;
-
+import java.util.*;
 import subway.*;
 
 /**
@@ -162,25 +158,65 @@ public class Search {
 
 	// Main
 	public static void main(String[] args) throws FileNotFoundException {
-		// Replace this code with code that runs the program specified by
-		// the command arguments
 
-		SubwayMap hahaYeah = SubwayMap.buildBostonMap();
+    if (args.length != 4) {
+        System.out.println("Usage: java search.Search <map> <algorithm> <start> <goal>");
+        return;
+    }
 
-		State start = new State("Assembly");
-		State goal = new State("Fenway");
+    String mapName = args[0].toLowerCase();
+    String algorithm = args[1].toLowerCase();
+    String startName = args[2];
+    String goalName = args[3];
 
-		SearchProblem what = new SearchProblem(start, goal, hahaYeah);
+    // Build the correct map
+    SubwayMap map = null;
 
-		System.out.println(breadthFirstSearch(what));
-		System.out.println("ran bfs");
-
-		System.out.println(depthFirstSearch(what));
-		System.out.println("ran dfs");
-		// System.out.println(args[0]);
-		System.out.println("Usage: java Search <inputFile>");
-		// Problem p = new SearchProblem(new State(args[2]), new State(args[3]),
-		// args[0]);
-		// depthFirstSearch(p);
+    if (mapName.equals("boston")) {
+        map = SubwayMap.buildBostonMap();
+    } 
+    else if(mapName.equals("london")) {
+        map = SubwayMap.buildLondonMap();
+    }else{
+		System.out.println("Unknown map: " + mapName);
+        return;
 	}
+
+    // Create states
+    State start = new State(startName);
+    State goal = new State(goalName);
+
+    Problem problem = new SearchProblem(start, goal, map);
+
+    Node result = null;
+
+    // Choose algorithm
+    switch (algorithm) {
+        case "bfs":
+            result = breadthFirstSearch(problem);
+            break;
+
+        case "dfs":
+            result = depthFirstSearch(problem);
+            break;
+
+        case "ucs":
+            result = uniformCostSearch(problem);
+            break;
+
+        case "astar":
+            result = aStarSearch(problem);
+            break;
+
+        default:
+            System.out.println("Unknown algorithm: " + algorithm);
+            return;
+    }
+
+    if (result == null) {
+        System.out.println("No solution found.");
+    } else {
+        System.out.println("Search complete.");
+    }
+}
 }
