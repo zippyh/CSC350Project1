@@ -114,20 +114,22 @@ public class Search {
 				frontierStates.add(node.getState());
 			}
 			// Checks to see is the child node is in the frontier or explored set
-			for (Node node : current.expand(problem)) {
-				if (!explored.contains(node.getState()) && !frontierStates.contains(node.getState())) {
+			for (Tuple tuple : problem.successor(current.getState())) {
+				if (!explored.contains(tuple.getState()) && !frontierStates.contains(tuple.getState())) {
 					// Checks to see if the child node is the goal state
-					if (problem.goalTest(node.getState())) {
+					if (problem.goalTest(tuple.getState())) {
+						Node goalNode = new Node(tuple.getState(), current, tuple.getAction(),
+								current.getPathCost() + 1);
 						System.out.println("Final Path:");
-						for (Node n : node.path()) {
+						for (Node n : goalNode.path()) {
 							System.out.println(n.getState());
 						}
-						System.out.println("Total cost: " + node.getPathCost());
+						System.out.println("Total cost: " + goalNode.getPathCost());
 						System.out.println("Nodes visited: " + explored.size());
-						return node;
+						return goalNode;
 					}
 					// If the child node is not the goal state it gets added to the frontier
-					frontier.push(node);
+					frontier.push(new Node(tuple.getState(), current, tuple.getAction(), current.getPathCost() + 1));
 				}
 			}
 
@@ -208,8 +210,68 @@ public class Search {
 	// Informed (Heuristic) Search
 
 	public static Node aStarSearch(Problem problem) {
-		// YOUR CODE HERE
-		return null;
+		// ucs uses priority queue
+    	PriorityQueue<Node> frontier =new PriorityQueue<>(Comparator.comparingDouble(n -> n.getPathCost() + problem.h(n)));
+
+    	HashSet<State> explored = new HashSet<>();
+
+    	Node start = new Node(problem.getInitial());
+    	int nodesVisited = 0;
+
+    	frontier.add(start);
+
+    	while (!frontier.isEmpty()) {
+
+        	Node current = frontier.poll();
+        	nodesVisited++;
+
+        	// goal test immediately 
+        	if (problem.goalTest(current.getState())) {
+
+            	System.out.println("Final Path:");
+            	for (Node n : current.path()) {
+                	System.out.println(n.getState());
+            	}
+
+            	System.out.println("Total cost: " + current.getPathCost());
+            	System.out.println("Nodes visited: " + nodesVisited);
+
+            	return current;
+        	}
+
+        	explored.add(current.getState());
+
+        	for (Node child : current.expand(problem)) {
+
+            	State childState = child.getState();
+            	double childCost = child.getPathCost();
+
+            	// check if explored already
+            	if (explored.contains(childState)) {
+               		continue;
+            	}
+
+            	// check if node not in frontier
+            	Node frontierNode = null;
+            	for (Node n : frontier) {
+                	if (n.getState().equals(childState)) {
+                    	frontierNode = n;
+                    	break;
+                	}
+            	}
+				
+				//check if not in frontier and replace if in frontier but higher cost
+            	if (frontierNode == null) {
+                	frontier.add(child);
+            	} else if (childCost < frontierNode.getPathCost()) {
+                	frontier.remove(frontierNode);
+                	frontier.add(child);
+            	}
+        	}
+    	}
+
+    	System.out.println("Nodes visited: " + nodesVisited);
+    	return null;
 	}
 
 	// Main
