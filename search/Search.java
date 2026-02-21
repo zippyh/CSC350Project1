@@ -275,16 +275,21 @@ public class Search {
 	// Main
 	public static void main(String[] args) throws FileNotFoundException {
 
-		if (args.length < 4 || args.length > 5) {
+		if (args.length < 3 || args.length > 5) {
 			System.out.println(
-					"Usage: java search.Search <map> <algorithm> <start> <goal> OR java search.Search <map> <algorithm> <start> <goal> <distance>");
+					"Usage: java search.Search <map> <algorithm> <start> <goal> OR java search.Search <map> <algorithm> <start> <goal> <distance> OR java search.Search eight <algorithm> <start configuration>");
 			return;
 		}
 
 		String mapName = args[0].toLowerCase();
 		String algorithm = args[1].toLowerCase();
 		String startName = args[2];
-		String goalName = args[3];
+		String goalName = ""; 
+
+		if (args.length > 3) {
+			goalName = args[3];
+		}
+		
 
 		double distance;
 
