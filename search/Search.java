@@ -38,6 +38,8 @@ public class Search {
 	// im probably gonna modify this ngl
 	// Uninformed Search algorithms
 
+	private static Problem problem = null;
+
 	public static Node breadthFirstSearch(Problem problem) {
 		Queue<Node> frontier = new LinkedList<>();
 		HashSet<State> exploredSet = new HashSet<>();
@@ -46,7 +48,8 @@ public class Search {
 
 		int nodesVisited = 0;
 
-		// check to see if start node is goal node ("i want to get from Fenway to Fenway!")
+		// check to see if start node is goal node ("i want to get from Fenway to
+		// Fenway!")
 		if (problem.goalTest(start.getState())) {
 			return start;
 		}
@@ -61,7 +64,8 @@ public class Search {
 			exploredSet.add(node.getState());
 
 			for (Node child : node.expand(problem)) {
-				// checks to see if each node expanded from the child node is in the frontier or explored set
+				// checks to see if each node expanded from the child node is in the frontier or
+				// explored set
 
 				boolean inFrontier = false;
 
@@ -130,75 +134,75 @@ public class Search {
 			}
 
 		}
-		//If the frontier is empty return null
+		// If the frontier is empty return null
 		System.out.println("Nodes visited: " + explored.size());
 		return null;
 	}
-	
+
 	public static Node uniformCostSearch(Problem problem) {
 
     	// ucs uses priority queue
     	PriorityQueue<Node> frontier = new PriorityQueue<>(Comparator.comparingDouble(Node::getPathCost));
 
-    	HashSet<State> explored = new HashSet<>();
+		HashSet<State> explored = new HashSet<>();
 
     	Node start = new Node(problem.getInitial()); //add start with initial nodes visited as 0
     	int nodesVisited = 0;
 
-    	frontier.add(start);
+		frontier.add(start);
 
-    	while (!frontier.isEmpty()) {
+		while (!frontier.isEmpty()) {
 
-        	Node current = frontier.poll();
-        	nodesVisited++;
+			Node current = frontier.poll();
+			nodesVisited++;
 
-        	// goal test immediately 
-        	if (problem.goalTest(current.getState())) {
+			// goal test immediately
+			if (problem.goalTest(current.getState())) {
 
-            	System.out.println("Final Path:");
-            	for (Node n : current.path()) {
-                	System.out.println(n.getState());
-            	}
+				System.out.println("Final Path:");
+				for (Node n : current.path()) {
+					System.out.println(n.getState());
+				}
 
-            	System.out.println("Total cost: " + current.getPathCost());
-            	System.out.println("Nodes visited: " + nodesVisited);
+				System.out.println("Total cost: " + current.getPathCost());
+				System.out.println("Nodes visited: " + nodesVisited);
 
-            	return current;
-        	}
+				return current;
+			}
 
-        	explored.add(current.getState());
+			explored.add(current.getState());
 
-        	for (Node child : current.expand(problem)) {
+			for (Node child : current.expand(problem)) {
 
-            	State childState = child.getState();
-            	double childCost = child.getPathCost();
+				State childState = child.getState();
+				double childCost = child.getPathCost();
 
-            	// check if explored already
-            	if (explored.contains(childState)) {
-               		continue;
-            	}
+				// check if explored already
+				if (explored.contains(childState)) {
+					continue;
+				}
 
-            	// check if node not in frontier
-            	Node frontierNode = null;
-            	for (Node n : frontier) {
-                	if (n.getState().equals(childState)) {
-                    	frontierNode = n;
-                    	break;
-                	}
-            	}
-				
-				//check if not in frontier and replace if in frontier but higher cost
-            	if (frontierNode == null) {
-                	frontier.add(child);
-            	} else if (childCost < frontierNode.getPathCost()) {
-                	frontier.remove(frontierNode);
-                	frontier.add(child);
-            	}
-        	}
-    	}
+				// check if node not in frontier
+				Node frontierNode = null;
+				for (Node n : frontier) {
+					if (n.getState().equals(childState)) {
+						frontierNode = n;
+						break;
+					}
+				}
 
-    	System.out.println("Nodes visited: " + nodesVisited);
-    	return null;
+				// check if not in frontier and replace if in frontier but higher cost
+				if (frontierNode == null) {
+					frontier.add(child);
+				} else if (childCost < frontierNode.getPathCost()) {
+					frontier.remove(frontierNode);
+					frontier.add(child);
+				}
+			}
+		}
+
+		System.out.println("Nodes visited: " + nodesVisited);
+		return null;
 	}
 
 	// Informed (Heuristic) Search
@@ -207,136 +211,141 @@ public class Search {
 		// ucs structure is extremely similar to astart but with heuristic in the comparator
     	PriorityQueue<Node> frontier =new PriorityQueue<>(Comparator.comparingDouble(n -> n.getPathCost() + problem.h(n)));
 
-    	HashSet<State> explored = new HashSet<>();
+		HashSet<State> explored = new HashSet<>();
 
     	Node start = new Node(problem.getInitial()); //add start with initial nodes visited as 0
     	int nodesVisited = 0;
 
-    	frontier.add(start);
+		frontier.add(start);
 
-    	while (!frontier.isEmpty()) {
+		while (!frontier.isEmpty()) {
 
-        	Node current = frontier.poll();
-        	nodesVisited++;
+			Node current = frontier.poll();
+			nodesVisited++;
 
-        	// goal test immediately 
-        	if (problem.goalTest(current.getState())) {
+			// goal test immediately
+			if (problem.goalTest(current.getState())) {
 
-            	System.out.println("Final Path:");
-            	for (Node n : current.path()) {
-                	System.out.println(n.getState());
-            	}
+				System.out.println("Final Path:");
+				for (Node n : current.path()) {
+					System.out.println(n.getState());
+				}
 
-            	System.out.println("Total cost: " + current.getPathCost());
-            	System.out.println("Nodes visited: " + nodesVisited);
+				System.out.println("Total cost: " + current.getPathCost());
+				System.out.println("Nodes visited: " + nodesVisited);
 
-            	return current;
-        	}
+				return current;
+			}
 
-        	explored.add(current.getState());
+			explored.add(current.getState());
 
-        	for (Node child : current.expand(problem)) {
+			for (Node child : current.expand(problem)) {
 
-            	State childState = child.getState();
-            	double childCost = child.getPathCost();
+				State childState = child.getState();
+				double childCost = child.getPathCost();
 
-            	// check if explored already
-            	if (explored.contains(childState)) {
-               		continue;
-            	}
+				// check if explored already
+				if (explored.contains(childState)) {
+					continue;
+				}
 
-            	// check if node not in frontier
-            	Node frontierNode = null;
-            	for (Node n : frontier) {
-                	if (n.getState().equals(childState)) {
-                    	frontierNode = n;
-                    	break;
-                	}
-            	}
-				
-				//check if not in frontier and replace if in frontier but higher cost
-            	if (frontierNode == null) {
-                	frontier.add(child);
-            	} else if (childCost < frontierNode.getPathCost()) {
-                	frontier.remove(frontierNode);
-                	frontier.add(child);
-            	}
-        	}
-    	}
+				// check if node not in frontier
+				Node frontierNode = null;
+				for (Node n : frontier) {
+					if (n.getState().equals(childState)) {
+						frontierNode = n;
+						break;
+					}
+				}
 
-    	System.out.println("Nodes visited: " + nodesVisited);
-    	return null;
+				// check if not in frontier and replace if in frontier but higher cost
+				if (frontierNode == null) {
+					frontier.add(child);
+				} else if (childCost < frontierNode.getPathCost()) {
+					frontier.remove(frontierNode);
+					frontier.add(child);
+				}
+			}
+		}
+
+		System.out.println("Nodes visited: " + nodesVisited);
+		return null;
 	}
 
 	// Main
 	public static void main(String[] args) throws FileNotFoundException {
 
-    if (args.length < 4 || args.length > 5) {
-        System.out.println("Usage: java search.Search <map> <algorithm> <start> <goal> OR java search.Search <map> <algorithm> <start> <goal> <distance>");
-        return;
-    }
+		if (args.length < 4 || args.length > 5) {
+			System.out.println(
+					"Usage: java search.Search <map> <algorithm> <start> <goal> OR java search.Search <map> <algorithm> <start> <goal> <distance>");
+			return;
+		}
 
-    String mapName = args[0].toLowerCase();
-    String algorithm = args[1].toLowerCase();
-    String startName = args[2];
-    String goalName = args[3];
+		String mapName = args[0].toLowerCase();
+		String algorithm = args[1].toLowerCase();
+		String startName = args[2];
+		String goalName = args[3];
 
-	double distance;
+		double distance;
 
-	if(args.length == 5){
-		distance = Double.parseDouble(args[4]);
-	}else{
-		distance = 0;
+		if (args.length == 5) {
+			distance = Double.parseDouble(args[4]);
+		} else {
+			distance = 0;
+		}
+
+		// Build the correct map
+		SubwayMap map = null;
+		if (!mapName.equals("eight")) {
+			if (mapName.equals("boston")) {
+				map = SubwayMap.buildBostonMap();
+			} else if (mapName.equals("london")) {
+				map = SubwayMap.buildLondonMap();
+			} else {
+				System.out.println("Unknown map: " + mapName);
+				return;
+			}
+			// Create states
+			State start = new State(startName);
+			State goal = new State(goalName);
+
+			 problem = new SearchProblem(start, goal, map, distance);
+
+		} else {
+			State start = new State(startName);
+			State goal = new State("012345678");
+			problem = new BlockSearchProblem(start, goal);
+		}
+
+		Node result = null;
+
+		// Choose algorithm
+		switch (algorithm) {
+			case "bfs":
+				result = breadthFirstSearch(problem);
+				break;
+
+			case "dfs":
+				result = depthFirstSearch(problem);
+				break;
+
+			case "ucs":
+				result = uniformCostSearch(problem);
+				break;
+
+			case "astar":
+				result = aStarSearch(problem);
+				break;
+
+			default:
+				System.out.println("Unknown algorithm: " + algorithm);
+				return;
+		}
+
+		if (result == null) {
+			System.out.println("No solution found.");
+		} else {
+			System.out.println("Search complete.");
+		}
 	}
-
-    // Build the correct map
-    SubwayMap map = null;
-
-    if (mapName.equals("boston")) {
-        map = SubwayMap.buildBostonMap();
-    } 
-    else if(mapName.equals("london")) {
-        map = SubwayMap.buildLondonMap();
-    }else{
-		System.out.println("Unknown map: " + mapName);
-        return;
-	}
-
-    // Create states
-    State start = new State(startName);
-    State goal = new State(goalName);
-
-    Problem problem = new SearchProblem(start, goal, map, distance);
-
-    Node result = null;
-
-    // Choose algorithm
-    switch (algorithm) {
-        case "bfs":
-            result = breadthFirstSearch(problem);
-            break;
-
-        case "dfs":
-            result = depthFirstSearch(problem);
-            break;
-
-        case "ucs":
-            result = uniformCostSearch(problem);
-            break;
-
-        case "astar":
-            result = aStarSearch(problem);
-            break;
-
-        default:
-            System.out.println("Unknown algorithm: " + algorithm);
-            return;
-    }
-
-    if (result == null) {
-        System.out.println("No solution found.");
-    } else {
-        System.out.println("Search complete.");
-    }
-}
 }
