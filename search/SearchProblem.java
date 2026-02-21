@@ -5,7 +5,7 @@ import subway.*;
 
 public class SearchProblem extends Problem {
 
-    private int d; // distance
+    private double d; // distance
     private SubwayMap map;
 
     public SearchProblem(State startStation) {
@@ -17,7 +17,7 @@ public class SearchProblem extends Problem {
         this.map = map;
     }
 
-    public SearchProblem(State startStation, State destination, SubwayMap map, int d) {
+    public SearchProblem(State startStation, State destination, SubwayMap map, double d) {
         super(startStation, destination);
         this.map = map;
         this.d = d;
@@ -75,5 +75,32 @@ public class SearchProblem extends Problem {
         Station s2 = map.getStationByName(this.goal.getName());
         double distance = SubwayMap.straightLineDistance(s1, s2);
         return distance;
+    }
+
+    @Override
+    public boolean goalTest(State state) {
+        // check if it's an exact match first
+        if (state.equals(this.goal)) {
+            return true;
+        }
+
+        // if not, check if it's within the given walking distance
+        Station s1 = map.getStationByName(state.getName());
+        Station s2 = map.getStationByName(this.goal.getName());
+    
+        if (s1 != null && s2 != null) {
+            double currentDist = SubwayMap.straightLineDistance(s1, s2);
+            // if it is, it's a goal
+            if (currentDist <= this.d) {
+                return true;
+            }
+        }
+
+        // if not, then it is not
+        return false;
+    }
+
+    public static double getDistance(SearchProblem problem){
+        return problem.d;
     }
 }
