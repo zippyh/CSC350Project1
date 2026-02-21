@@ -114,22 +114,20 @@ public class Search {
 				frontierStates.add(node.getState());
 			}
 			// Checks to see is the child node is in the frontier or explored set
-			for (Tuple tuple : problem.successor(current.getState())) {
-				if (!explored.contains(tuple.getState()) && !frontierStates.contains(tuple.getState())) {
+			for (Node node : current.expand(problem)) {
+				if (!explored.contains(node.getState()) && !frontierStates.contains(node.getState())) {
 					// Checks to see if the child node is the goal state
-					if (problem.goalTest(tuple.getState())) {
-						Node goalNode = new Node(tuple.getState(), current, tuple.getAction(),
-								current.getPathCost() + 1);
+					if (problem.goalTest(node.getState())) {
 						System.out.println("Final Path:");
-						for (Node n : goalNode.path()) {
+						for (Node n : node.path()) {
 							System.out.println(n.getState());
 						}
-						System.out.println("Total cost: " + goalNode.getPathCost());
+						System.out.println("Total cost: " + node.getPathCost());
 						System.out.println("Nodes visited: " + explored.size());
-						return goalNode;
+						return node;
 					}
 					// If the child node is not the goal state it gets added to the frontier
-					frontier.push(new Node(tuple.getState(), current, tuple.getAction(), current.getPathCost() + 1));
+					frontier.push(node);
 				}
 			}
 
