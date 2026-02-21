@@ -141,72 +141,71 @@ public class Search {
 	
 	public static Node uniformCostSearch(Problem problem) {
 
-    // Priority queue ordered by path cost (lowest cost first)
-    PriorityQueue<Node> frontier = new PriorityQueue<>(
-        Comparator.comparingDouble(Node::getPathCost)
-    );
+    	// ucs uses priority queue
+    	PriorityQueue<Node> frontier = new PriorityQueue<>(
+        	Comparator.comparingDouble(Node::getPathCost)
+    	);
 
-    HashSet<State> explored = new HashSet<>();
+    	HashSet<State> explored = new HashSet<>();
 
-    Node start = new Node(problem.getInitial());
-    int nodesVisited = 0;
+    	Node start = new Node(problem.getInitial());
+    	int nodesVisited = 0;
 
-    frontier.add(start);
+    	frontier.add(start);
 
-    while (!frontier.isEmpty()) {
+    	while (!frontier.isEmpty()) {
 
-        Node current = frontier.poll();
-        nodesVisited++;
+        	Node current = frontier.poll();
+        	nodesVisited++;
 
-        // Goal test happens when node is removed (UCS property)
-        if (problem.goalTest(current.getState())) {
+        	// goal test immediately 
+        	if (problem.goalTest(current.getState())) {
 
-            System.out.println("Final Path:");
-            for (Node n : current.path()) {
-                System.out.println(n.getState());
-            }
+            	System.out.println("Final Path:");
+            	for (Node n : current.path()) {
+                	System.out.println(n.getState());
+            	}
 
-            System.out.println("Total cost: " + current.getPathCost());
-            System.out.println("Nodes visited: " + nodesVisited);
+            	System.out.println("Total cost: " + current.getPathCost());
+            	System.out.println("Nodes visited: " + nodesVisited);
 
-            return current;
-        }
+            	return current;
+        	}
 
-        explored.add(current.getState());
+        	explored.add(current.getState());
 
-        for (Node child : current.expand(problem)) {
+        	for (Node child : current.expand(problem)) {
 
-            State childState = child.getState();
-            double childCost = child.getPathCost();
+            	State childState = child.getState();
+            	double childCost = child.getPathCost();
 
-            // Check if child is in explored
-            if (explored.contains(childState)) {
-                continue;
-            }
+            	// check if explored already
+            	if (explored.contains(childState)) {
+               		continue;
+            	}
 
-            // Check if child is already in frontier
-            Node frontierNode = null;
-            for (Node n : frontier) {
-                if (n.getState().equals(childState)) {
-                    frontierNode = n;
-                    break;
-                }
-            }
+            	// check if node not in frontier
+            	Node frontierNode = null;
+            	for (Node n : frontier) {
+                	if (n.getState().equals(childState)) {
+                    	frontierNode = n;
+                    	break;
+                	}
+            	}
+				
+				//check if not in frontier and replace if in frontier but higher cost
+            	if (frontierNode == null) {
+                	frontier.add(child);
+            	} else if (childCost < frontierNode.getPathCost()) {
+                	frontier.remove(frontierNode);
+                	frontier.add(child);
+            	}
+        	}
+    	}
 
-            if (frontierNode == null) {
-                // Not in frontier → add it
-                frontier.add(child);
-            } else if (childCost < frontierNode.getPathCost()) {
-                // Replace with cheaper path
-                frontier.remove(frontierNode);
-                frontier.add(child);
-            }
-        }
-    }
-
-    System.out.println("Nodes visited: " + nodesVisited);
-    return null;
-}
+    	System.out.println("Nodes visited: " + nodesVisited);
+    	return null;
+	}
 
 	// Informed (Heuristic) Search
 

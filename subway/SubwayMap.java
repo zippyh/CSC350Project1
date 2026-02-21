@@ -163,8 +163,8 @@ public class SubwayMap{
 	@return A SubwayMap object containing the Boston T data
 	*/
 	public static SubwayMap buildBostonMap() throws FileNotFoundException {
-		File stationFile = new File("data/boston_stations.csv");
-		File linkFile = new File("data/boston_links.csv");
+		File stationFile = new File("../data/boston_stations.csv");
+		File linkFile = new File("../data/boston_links.csv");
 		
 		return buildMap(stationFile, linkFile);	
 	}
