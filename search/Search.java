@@ -142,13 +142,11 @@ public class Search {
 	public static Node uniformCostSearch(Problem problem) {
 
     	// ucs uses priority queue
-    	PriorityQueue<Node> frontier = new PriorityQueue<>(
-        	Comparator.comparingDouble(Node::getPathCost)
-    	);
+    	PriorityQueue<Node> frontier = new PriorityQueue<>(Comparator.comparingDouble(Node::getPathCost));
 
     	HashSet<State> explored = new HashSet<>();
 
-    	Node start = new Node(problem.getInitial());
+    	Node start = new Node(problem.getInitial()); //add start with initial nodes visited as 0
     	int nodesVisited = 0;
 
     	frontier.add(start);
@@ -210,12 +208,12 @@ public class Search {
 	// Informed (Heuristic) Search
 
 	public static Node aStarSearch(Problem problem) {
-		// ucs uses priority queue
+		// ucs structure is extremely similar to astart but with heuristic in the comparator
     	PriorityQueue<Node> frontier =new PriorityQueue<>(Comparator.comparingDouble(n -> n.getPathCost() + problem.h(n)));
 
     	HashSet<State> explored = new HashSet<>();
 
-    	Node start = new Node(problem.getInitial());
+    	Node start = new Node(problem.getInitial()); //add start with initial nodes visited as 0
     	int nodesVisited = 0;
 
     	frontier.add(start);
