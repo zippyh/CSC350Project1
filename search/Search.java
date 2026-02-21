@@ -46,8 +46,7 @@ public class Search {
 
 		int nodesVisited = 0;
 
-		// check to see if start node is goal node ("i want to get from Fenway to
-		// Fenway!")
+		// check to see if start node is goal node ("i want to get from Fenway to Fenway!")
 		if (problem.goalTest(start.getState())) {
 			return start;
 		}
@@ -62,8 +61,7 @@ public class Search {
 			exploredSet.add(node.getState());
 
 			for (Node child : node.expand(problem)) {
-				// checks to see if each node expanded from the child node is in the frontier or
-				// explored set
+				// checks to see if each node expanded from the child node is in the frontier or explored set
 
 				boolean inFrontier = false;
 
@@ -114,22 +112,20 @@ public class Search {
 				frontierStates.add(node.getState());
 			}
 			// Checks to see is the child node is in the frontier or explored set
-			for (Tuple tuple : problem.successor(current.getState())) {
-				if (!explored.contains(tuple.getState()) && !frontierStates.contains(tuple.getState())) {
+			for (Node node : current.expand(problem)) {
+				if (!explored.contains(node.getState()) && !frontierStates.contains(node.getState())) {
 					// Checks to see if the child node is the goal state
-					if (problem.goalTest(tuple.getState())) {
-						Node goalNode = new Node(tuple.getState(), current, tuple.getAction(),
-								current.getPathCost() + 1);
+					if (problem.goalTest(node.getState())) {
 						System.out.println("Final Path:");
-						for (Node n : goalNode.path()) {
+						for (Node n : node.path()) {
 							System.out.println(n.getState());
 						}
-						System.out.println("Total cost: " + goalNode.getPathCost());
+						System.out.println("Total cost: " + node.getPathCost());
 						System.out.println("Nodes visited: " + explored.size());
-						return goalNode;
+						return node;
 					}
 					// If the child node is not the goal state it gets added to the frontier
-					frontier.push(new Node(tuple.getState(), current, tuple.getAction(), current.getPathCost() + 1));
+					frontier.push(node);
 				}
 			}
 
@@ -277,8 +273,8 @@ public class Search {
 	// Main
 	public static void main(String[] args) throws FileNotFoundException {
 
-    if (args.length != 4) {
-        System.out.println("Usage: java search.Search <map> <algorithm> <start> <goal>");
+    if (args.length < 4 || args.length > 5) {
+        System.out.println("Usage: java search.Search <map> <algorithm> <start> <goal> OR java search.Search <map> <algorithm> <start> <goal> <distance>");
         return;
     }
 
@@ -286,6 +282,14 @@ public class Search {
     String algorithm = args[1].toLowerCase();
     String startName = args[2];
     String goalName = args[3];
+
+	double distance;
+
+	if(args.length == 5){
+		distance = Double.parseDouble(args[4]);
+	}else{
+		distance = 0;
+	}
 
     // Build the correct map
     SubwayMap map = null;
@@ -304,7 +308,7 @@ public class Search {
     State start = new State(startName);
     State goal = new State(goalName);
 
-    Problem problem = new SearchProblem(start, goal, map);
+    Problem problem = new SearchProblem(start, goal, map, distance);
 
     Node result = null;
 
