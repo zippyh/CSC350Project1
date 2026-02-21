@@ -57,16 +57,16 @@ public class SearchProblem extends Problem {
     public double pathCost(double c, State state1, Action action, State state2){
         Station s1 = map.getStationByName(state1.getName());
         Station s2 = map.getStationByName(state2.getName());
-		ArrayList<Link> linkList = new ArrayList<Link>();
+		ArrayList<Link> linkList = map.getLinksBetween(s1, s2);
 
-        linkList = map.getLinksBetween(s1, s2);
+        double cost = c;
 
-        double cost;
+        for(Link l : linkList){
+            cost += l.getDistance();
+        }
 
+        return cost;
         
-
-        //return cost;
-        
-        return c + 1;
+        //return c + 1;
 	}
 }
