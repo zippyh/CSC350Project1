@@ -139,15 +139,74 @@ public class Search {
 		return null;
 	}
 	
-	public static Node uniformCostSearch(Problem problem){
-		//YOUR CODE HERE
-		PriorityQueue priorityQueue = new PriorityQueue<Node>();
+	public static Node uniformCostSearch(Problem problem) {
 
-		while (!priorityQueue.isEmpty()){
-			
-		}
-		return null;
-	}
+    // Priority queue ordered by path cost (lowest cost first)
+    PriorityQueue<Node> frontier = new PriorityQueue<>(
+        Comparator.comparingDouble(Node::getPathCost)
+    );
+
+    HashSet<State> explored = new HashSet<>();
+
+    Node start = new Node(problem.getInitial());
+    int nodesVisited = 0;
+
+    frontier.add(start);
+
+    while (!frontier.isEmpty()) {
+
+        Node current = frontier.poll();
+        nodesVisited++;
+
+        // Goal test happens when node is removed (UCS property)
+        if (problem.goalTest(current.getState())) {
+
+            System.out.println("Final Path:");
+            for (Node n : current.path()) {
+                System.out.println(n.getState());
+            }
+
+            System.out.println("Total cost: " + current.getPathCost());
+            System.out.println("Nodes visited: " + nodesVisited);
+
+            return current;
+        }
+
+        explored.add(current.getState());
+
+        for (Node child : current.expand(problem)) {
+
+            State childState = child.getState();
+            double childCost = child.getPathCost();
+
+            // Check if child is in explored
+            if (explored.contains(childState)) {
+                continue;
+            }
+
+            // Check if child is already in frontier
+            Node frontierNode = null;
+            for (Node n : frontier) {
+                if (n.getState().equals(childState)) {
+                    frontierNode = n;
+                    break;
+                }
+            }
+
+            if (frontierNode == null) {
+                // Not in frontier → add it
+                frontier.add(child);
+            } else if (childCost < frontierNode.getPathCost()) {
+                // Replace with cheaper path
+                frontier.remove(frontierNode);
+                frontier.add(child);
+            }
+        }
+    }
+
+    System.out.println("Nodes visited: " + nodesVisited);
+    return null;
+}
 
 	// Informed (Heuristic) Search
 
