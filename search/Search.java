@@ -312,6 +312,7 @@ public class Search {
 			 problem = new SearchProblem(start, goal, map, distance);
 
 		} else {
+			
 			State start = new State(startName);
 			State goal = new State("012345678");
 			problem = new BlockSearchProblem(start, goal);
