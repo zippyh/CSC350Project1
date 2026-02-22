@@ -1,12 +1,13 @@
+/*
+* BlockSearchProblem.java
+* Description: Handles the 8 block/tile puzzle search problems. 
+*/
+
 package search;
 
 import java.util.ArrayList;
 
 public class BlockSearchProblem extends Problem {
-    public BlockSearchProblem(State startOrder) {
-        super(startOrder);
-    }
-
     public BlockSearchProblem(State startOrder, State goalOrder) {
         super(startOrder, goalOrder);
     }
@@ -14,55 +15,50 @@ public class BlockSearchProblem extends Problem {
     @Override
     public ArrayList<Tuple> successor(State state) {
         ArrayList<Tuple> successors = new ArrayList<>();
-        char[] charState = state.toString().toCharArray();
-        int blankIndex = 0;
+        // use getName to get the raw string (i.e. 142305678)
+        String currentString = state.getName(); 
+        char[] charState = currentString.toCharArray();
+        
+        // find the empty space (the 0) in the raw string representation
+        int blankIndex = -1;
         for (int i = 0; i < charState.length; i++) {
             if (charState[i] == '0') {
                 blankIndex = i;
+                break;
             }
         }
-        // List of moves
-        ArrayList<String> moves = new ArrayList<>();
-        moves.add("UP");
-        moves.add("LEFT");
-        moves.add("RIGHT");
-        moves.add("DOWN");
-        // Makes a new state for every move
+        
+        // define moves for the blank space
+        String[] moves = {"UP", "LEFT", "RIGHT", "DOWN"};
         for (String move : moves) {
-            char[] newState = charState.clone();
+            int targetIndex = -1;
             switch (move) {
                 case "UP":
-                    if (blankIndex >= 3) {
-                        char temp = newState[blankIndex - 3];
-                        newState[blankIndex - 3] = '0';
-                        newState[blankIndex] = temp;
-                        successors.add(new Tuple(new Action(move), new State(newState.toString())));
-                    }
+                    // cannot move up if the blank is in the top row
+                    if (blankIndex >= 3) targetIndex = blankIndex - 3;
                     break;
                 case "LEFT":
-                    if (blankIndex % 3 != 0) {
-                        char temp = newState[blankIndex - 1];
-                        newState[blankIndex - 1] = '0';
-                        newState[blankIndex] = temp;
-                        successors.add(new Tuple(new Action(move), new State(newState.toString())));
-                    }
+                    // cannot move left if the blank is in the left column
+                    if (blankIndex % 3 != 0) targetIndex = blankIndex - 1;
                     break;
                 case "RIGHT":
-                    if (blankIndex % 3 != 2) {
-                        char temp = newState[blankIndex + 1];
-                        newState[blankIndex + 1] = '0';
-                        newState[blankIndex] = temp;
-                        successors.add(new Tuple(new Action(move), new State(newState.toString())));
-                    }
+                    // cannot move right if the blank is in the right column
+                    if (blankIndex % 3 != 2) targetIndex = blankIndex + 1;
                     break;
                 case "DOWN":
-                    if (blankIndex < 6) {
-                        char temp = newState[blankIndex + 3];
-                        newState[blankIndex + 3] = '0';
-                        newState[blankIndex] = temp;
-                        successors.add(new Tuple(new Action(move), new State(newState.toString())));
-                    }
+                    // cannot move down if the blank is in the bottom row
+                    if (blankIndex < 6) targetIndex = blankIndex + 3;
                     break;
+            }
+
+            if (targetIndex != -1) {
+                // Swap the blank space and the given tile
+                char[] nextChars = currentString.toCharArray();
+                nextChars[blankIndex] = nextChars[targetIndex];
+                nextChars[targetIndex] = '0';
+                
+                // Create a new tuple from the modified string 
+                successors.add(new Tuple(new Action(move), new State(new String(nextChars))));
             }
         }
         return successors;
@@ -70,17 +66,27 @@ public class BlockSearchProblem extends Problem {
 
     @Override
     public double h(Node node) {
-        String currentState = node.getState().toString();
-        String goalState = this.goal.toString();
+        String currentState = node.getState().getName(); // Current tile arrangement
+        String goalState = this.goal.getName(); // Target tile arrangement
         int distance = 0;
+
         for (int i = 0; i < currentState.length(); i++) {
-            char c = currentState.charAt(i);
-            if (c != '0') {
-                int goalIndex = goalState.indexOf(c);
-                distance += Math.abs(i / 3 - goalIndex / 3) + Math.abs(i % 3 - goalIndex % 3);
+            char tile = currentState.charAt(i);
+            // Manhattan distance must ignore the blank to remain admissible
+            if (tile != '0') {
+                int currentPos = i;
+                int goalPos = goalState.indexOf(tile);
+
+                // Convert 1D array index into (x,y) coords for 3x3 grif
+                int currentX = currentPos % 3;
+                int currentY = currentPos / 3;
+                int goalX = goalPos % 3;
+                int goalY = goalPos / 3;
+
+                // Manhattan distance calculation
+                distance += Math.abs(currentX - goalX) + Math.abs(currentY - goalY);
             }
         }
         return distance;
     }
-
 }

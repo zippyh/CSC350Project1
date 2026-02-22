@@ -55,12 +55,14 @@ public class SearchProblem extends Problem {
 
     @Override
     public double pathCost(double c, State state1, Action action, State state2){
+        // gets the current station and the next station you want to go to
         Station s1 = map.getStationByName(state1.getName());
         Station s2 = map.getStationByName(state2.getName());
+        // gets the total links between. in practice this should always be 1 but store in a list in case
 		ArrayList<Link> linkList = map.getLinksBetween(s1, s2);
-
         double cost = c;
 
+        // get the distance between the stations (in km) and add to cost 
         for(Link l : linkList){
             cost += l.getDistance();
         }
@@ -69,6 +71,7 @@ public class SearchProblem extends Problem {
         
         //return c + 1;
 	}
+
     @Override
     public double h(Node node) {
         Station s1 = map.getStationByName(node.getState().getName());
@@ -96,11 +99,14 @@ public class SearchProblem extends Problem {
             }
         }
 
-        // if not, then it is not
+        // if not, then it is not a goal
         return false;
     }
 
+    // just to get the given walking distance. 
     public static double getDistance(SearchProblem problem){
         return problem.d;
     }
 }
+
+

@@ -48,8 +48,7 @@ public class Search {
 
 		int nodesVisited = 0;
 
-		// check to see if start node is goal node ("i want to get from Fenway to
-		// Fenway!")
+		// check to see if start node is goal node ("i want to get from Fenway to Fenway!")
 		if (problem.goalTest(start.getState())) {
 			return start;
 		}
@@ -64,8 +63,7 @@ public class Search {
 			exploredSet.add(node.getState());
 
 			for (Node child : node.expand(problem)) {
-				// checks to see if each node expanded from the child node is in the frontier or
-				// explored set
+				// checks to see if each node expanded from the child node is in the frontier or explored set
 
 				boolean inFrontier = false;
 
@@ -77,9 +75,9 @@ public class Search {
 				}
 
 				if (!exploredSet.contains(child.getState()) && !inFrontier) {
-					// is this node the goal node?
+					// is this node the goal node (either the correct node or within the given acceptable distance of the node)?
 					if (problem.goalTest(child.getState())) {
-						// if so, print out path, cost, etc
+						// if so, print out path, cost, and number of nodes visited
 						System.out.println("Final Path:");
 
 						for (Node n : child.path()) {
@@ -96,6 +94,8 @@ public class Search {
 				}
 			}
 		}
+
+		// if we fail to find a path, print out the number of nodes visited and return null so main method can print that no path is found
 		System.out.println("Nodes visited: " + nodesVisited);
 		return null;
 	}
@@ -286,6 +286,7 @@ public class Search {
 		String startName = args[2];
 		String goalName = ""; 
 
+		// only read in the name of the 
 		if (args.length > 3) {
 			goalName = args[3];
 		}
@@ -299,7 +300,7 @@ public class Search {
 			distance = 0;
 		}
 
-		// Build the correct map
+		// Build the correct map (or choose the eights puzzle instead)
 		SubwayMap map = null;
 		if (!mapName.equals("eight")) {
 			if (mapName.equals("boston")) {
@@ -317,7 +318,6 @@ public class Search {
 			 problem = new SearchProblem(start, goal, map, distance);
 
 		} else {
-			
 			State start = new State(startName);
 			State goal = new State("012345678");
 			problem = new BlockSearchProblem(start, goal);
@@ -325,7 +325,7 @@ public class Search {
 
 		Node result = null;
 
-		// Choose algorithm
+		// Choose algorithm based on chosen algorithm
 		switch (algorithm) {
 			case "bfs":
 				result = breadthFirstSearch(problem);
@@ -349,9 +349,9 @@ public class Search {
 		}
 
 		if (result == null) {
-			System.out.println("No solution found.");
+			System.out.println("No solution found."); // frowny face
 		} else {
-			System.out.println("Search complete.");
+			System.out.println("Search complete."); // smiley face
 		}
 	}
 }
